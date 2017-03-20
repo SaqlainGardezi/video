@@ -37,7 +37,7 @@ wss.on('connection', function(connection){
 				if (users[data.name]) {
 					sendTo(connection, {
 						type:"login",
-						success: failure
+						success: false
 					});
 				}else{
 					// save user connection to server
@@ -134,7 +134,7 @@ wss.on('connection', function(connection){
 
 				if (conn!==null) {
 					sendTo(conn, {
-						type: leave
+						type: "leave"
 					});
 				}
 			}

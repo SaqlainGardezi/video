@@ -67,7 +67,7 @@ var callBtn=document.querySelector('#callBtn');
 var hangUpBtn=document.querySelector('#hangUpBtn');
 
 //hide call page
-callPage.style.display="none";
+//callPage.style.display="none";
 
 //login when the user clicks the button
 loginBtn.addEventListener("click", function(event){
@@ -94,7 +94,8 @@ function handleLogin(success){
 		//********
 
 		//getting localVideoStream
-		navigator.webkitGetUserMedia({video:true, audio:true}, function(myStream){
+		var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+		navigator.getUserMedia({video:true, audio:true}, function(myStream){
 			stream=myStream;
 
 			//displaying local Video stream on the page
@@ -105,14 +106,16 @@ function handleLogin(success){
 				"iceservers": [{"url": "stun:stun2.1.google.com:19302"}]
 			};
 
-			yourConn=new webkitRTCPeerConnection(configuration);
+			var RTCPeerConnection= webkitRTCPeerConnection || mozRTCPeerConnection;
+			yourConn=new RTCPeerConnection(configuration);
 
 			//setup stream listening
 			yourConn.addStream(stream);
 
 			//when a remote user adds stream to  the peer connection , we display it
 			yourConn.onaddstream=function(e){
-				remoteVideo.src=window.URL.createObjectUrl(e.stream);
+				var myURL = window.URL || window.webkitURL || window.mozURL
+				remoteVideo.src=myURL.createObjectURL(e.stream);
 			};
 
 			//setup Ice handling
@@ -202,7 +205,7 @@ hangUpBtn.addEventListener("click", function(){
 
 function handleLeave(){
 	connectedUser=null;
-	remoteVideo=src;
+	remoteVideo.src = null;
 
 	yourConn.close();
 	yourConn.onicecandidate=null;
